@@ -100,7 +100,9 @@ def run_finder(the_file, name_field, out_workspace=None, multi=True, angle=None)
     :rtype:
     """
 
-    args = ['CurveCommandLine.exe']
+    os.chdir(os.path.dirname(__file__))
+
+    args = [os.path.join(os.pardir, 'bin', 'CurveCommandLine.exe')]
 
     if angle is not None:
         args.extend(['-a', str(angle)])
@@ -129,6 +131,7 @@ def run_finder(the_file, name_field, out_workspace=None, multi=True, angle=None)
     p = subprocess.Popen(args, stdout=subprocess.PIPE, shell=True)
     p.wait()
     return p.stdout.read()
+
 
 def file_list_from_msg(msg):
     return re.findall(r'[A-Z]:\\\S+', msg)

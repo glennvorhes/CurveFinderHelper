@@ -1,8 +1,11 @@
 
-import arcpy
-import re
-import helpers
 import math
+import re
+
+import arcpy
+
+import helpers
+
 arcpy.env.overwriteOutput = True
 
 

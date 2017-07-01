@@ -1,7 +1,8 @@
-import arcpy
 import os
-import sys
 import shutil
+import sys
+
+import arcpy
 
 arcpy.env.overwriteOutput = True
 

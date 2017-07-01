@@ -1,6 +1,7 @@
-import arcpy
 import os
 import sys
+
+import arcpy
 
 try:
     import helpers
