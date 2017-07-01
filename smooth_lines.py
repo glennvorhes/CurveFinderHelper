@@ -1,33 +1,77 @@
-# import arcpy
+import arcpy
 import os
-import subprocess
+import sys
+import shutil
 
-input_f = r"C:\samples\vermont\vermont_sub.shp"
-tmp_smooth = r"in_memory\smooth"
+arcpy.env.overwriteOutput = True
 
-os.chdir(os.path.dirname(__file__))
+try:
+    import helpers
+except ImportError:
+    sys.path.extend(os.path.dirname(__file__))
+    import helpers
 
-# args = ['CurveCommandLine.exe', '-f', 'primarynam', '-m', input_f]
-args = ['CurveCommandLine.exe', '-f', 'primarynam', input_f]
+this_dir = os.path.dirname(__file__)
+os.chdir(this_dir)
+samples_dir = os.path.join(this_dir, os.pardir, 'CurveFinderHelperSamples')
 
-p = subprocess.Popen(args)
-#
-# (output, err) = p.communicate()
-# print(output)
-#This makes the wait possible
-p_status = p.wait()
+input_f = arcpy.GetParameterAsText(0)
+output_workspace = arcpy.GetParameterAsText(1) or r'C:\_temp_smooth.gdb'
+debug = str(arcpy.GetParameterAsText(2)).lower() == 'true'
 
+is_feet = helpers.is_feet(input_f)
+is_meters = helpers.is_meters(input_f)
 
-#
-# # bezier process
-# arcpy.SmoothLine_cartography(input_f, tmp_smooth, "BEZIER_INTERPOLATION")
-# # vary max deviation, keep it low, converts curves to lines with vertices provided smoothline output to a gdb or in_memory
-# arcpy.Densify_edit(tmp_smooth, "OFFSET", max_deviation="0.1 Meters")
-#
-# # paek, vary smoothing tolerance, might need to to high
-# arcpy.SmoothLine_cartography("vermont_sub", r"in_memory\paek", "PAEK", "1 Meters")
-#
+if not (is_meters or is_feet):
+    arcpy.AddError("Input feature class must be in feet or meters")
+    exit(0)
 
+input_name = helpers.get_file_name(input_f)
 
 
-# CurveCommandLine.exe
+if output_workspace.find('.gdb') > -1:
+    if arcpy.Exists(output_workspace):
+        arcpy.Delete_management(output_workspace)
+
+    arcpy.CreateFileGDB_management(os.path.dirname(output_workspace), os.path.basename(output_workspace))
+else:
+
+    if not os.path.isdir(output_workspace):
+        os.mkdir(output_workspace)
+
+        output_workspace = os.path.join(output_workspace, '_smoothed')
+
+    if os.path.isdir(output_workspace):
+        shutil.rmtree(output_workspace)
+
+    os.mkdir(output_workspace)
+
+smooth = r"in_memory\smooth"
+tmp_smooth = r"in_memory\temp_smooth"
+
+arcpy.SmoothLine_cartography(input_f, smooth, "BEZIER_INTERPOLATION")
+
+for i in range(10):
+
+    bezier_deviation = (i + 1) * 0.1
+    out_name_bezier = helpers.make_output_name(input_name, 'bezier', bezier_deviation)
+
+    paek_tolerance = (i + 1) * 2
+    out_name_paek = helpers.make_output_name(input_name, 'paek', paek_tolerance)
+
+    bezier_deviation_str = "{0} Meters".format(bezier_deviation)
+    arcpy.CopyFeatures_management(smooth, tmp_smooth)
+    arcpy.Densify_edit(tmp_smooth, "OFFSET", max_deviation=bezier_deviation_str)
+    arcpy.CopyFeatures_management(tmp_smooth, os.path.join(output_workspace, out_name_bezier))
+
+    paek_tolerance_str = "{0} Meters".format(paek_tolerance)
+    arcpy.SmoothLine_cartography(
+        input_f, os.path.join(output_workspace, out_name_paek), "PAEK", tolerance=paek_tolerance_str)
+
+    arcpy.AddMessage("BEZIER: {0}, PAEK: {1}".format(bezier_deviation_str, paek_tolerance_str))
+
+    if debug:
+        break
+
+arcpy.SetParameterAsText(3, output_workspace)
+
