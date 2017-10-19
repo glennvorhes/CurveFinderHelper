@@ -28,5 +28,4 @@ the_file = arcpy.Describe(original).catalogPath
 msg = helpers.run_finder(the_file, name_field, out_workspace, multi=(not debug))
 arcpy.AddMessage(msg)
 
-
 arcpy.SetParameterAsText(4, out_workspace)

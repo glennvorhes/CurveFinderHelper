@@ -43,3 +43,5 @@ if len(files) > 0:
     arcpy.CopyFeatures_management(files[0], output)
 else:
     arcpy.AddError("Something wrong with copying output")
+
+
