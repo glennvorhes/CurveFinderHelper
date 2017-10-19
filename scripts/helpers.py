@@ -78,9 +78,10 @@ def setup_name_field(field):
 
 
 def setup_workspace(wksp):
-    if wksp.endswith('.gdb') and arcpy.Exists(wksp):
-        arcpy.Delete_management(wksp)
-        arcpy.CreateFileGDB_management(os.path.dirname(wksp), os.path.basename(wksp))
+    pass
+    # if wksp.endswith('.gdb') and arcpy.Exists(wksp):
+    #     arcpy.Delete_management(wksp)
+    #     arcpy.CreateFileGDB_management(os.path.dirname(wksp), os.path.basename(wksp))
 
 
 def run_finder(the_file, name_field, out_workspace=None, multi=True, angle=None):

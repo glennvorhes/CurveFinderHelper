@@ -17,6 +17,7 @@ ground_truth = arcpy.GetParameterAsText(0)
 original_curves_workspace = arcpy.GetParameterAsText(1)
 smoothed_curves_workspace = arcpy.GetParameterAsText(2)
 debug = str(arcpy.GetParameterAsText(2)).lower() == 'true'
+result_file = r'C:\Users\glenn\Desktop\output.txt'
 
 # ground_truth = r'C:\_temp\New File Geodatabase.gdb\output_gt3'
 # original_curves_workspace = r'C:\_original.gdb'
@@ -63,17 +64,22 @@ if len(compare_list) == 0:
 best = compare_list[0]
 
 out_msg = "Best Approach\n"
-out_msg += '\tMethod: ' + best.method + '\n'
-out_msg += '\tAngle: ' + best.angle + '\n'
+out_msg += '\tMethod: {0}\n'.format(best.method)
+out_msg += '\tAngle: {0}\n'.format(best.angle)
 
 if isinstance(best, cal.CurveCollectionBezier):
-    out_msg += '\tDeviation: ' + best.deviation + '\n'
+    out_msg += '\tDeviation: {0}\n'.format(best.deviation)
 elif isinstance(best, cal.CurveCollectionPaek):
-    out_msg += '\tTolerance: ' + best.tolerance + '\n'
+    out_msg += '\tTolerance: \n'.format(best.tolerance)
 elif isinstance(best, cal.CurveCollectionOriginal):
     pass
 else:
     arcpy.AddError("Best method not found")
+
+with open(result_file, 'w') as f:
+    f.write(out_msg)
+
+
 
 
 
