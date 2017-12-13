@@ -3,6 +3,16 @@ import re
 import os
 import subprocess
 
+max_run = 2
+default_angle = 0.7
+
+
+def print_arc(*args):
+    print(args)
+    args = [str(a) for a in args]
+
+    arcpy.AddMessage(', '.join(args))
+
 
 def is_feet(input_fc):
     linear_unit = arcpy.Describe(input_fc).spatialReference.linearUnitName.lower()
@@ -28,6 +38,7 @@ def get_file_name(input_fc):
     return os.path.basename(get_path(input_fc))
 
 
+
 def make_output_name(fclass_name, alg, val):
     if isinstance(val, int):
         v = str(val).zfill(3)
@@ -38,7 +49,11 @@ def make_output_name(fclass_name, alg, val):
 
     v = v.replace('.', '_')
 
-    out_name = "{0}_{1}_{2}".format(fclass_name, alg, v)
+    out_name = "{0}_{1}_{2}_{3}_m".format(
+        fclass_name,
+        alg,
+        'dev' if alg == 'bezier' else 'tol',
+        v)
 
     if out_name.find('.shp') > -1:
         out_name = out_name.replace('.shp', '') + '.shp'
@@ -105,15 +120,19 @@ def run_finder(the_file, name_field, out_workspace=None, multi=True, angle=None)
 
     args = [os.path.join(os.pardir, 'bin', 'CurveCommandLine.exe')]
 
-    if angle is not None:
-        args.extend(['-a', str(angle)])
+    if angle is not None or not multi:
+        args.append('-a')
+        if angle is None:
+            args.append(str(default_angle))
+        else:
+            args.append(str(angle))
     elif multi:
         args.append('-m')
 
     if out_workspace is not None:
         args.extend(['-o', out_workspace])
 
-    if len(name_field) > 0:
+    if len(name_field.strip()) > 0:
 
         field_valid = False
 
@@ -125,7 +144,8 @@ def run_finder(the_file, name_field, out_workspace=None, multi=True, angle=None)
         if field_valid:
             args.extend(['-f', name_field])
         else:
-            arcpy.AddWarning("Field {0} not found in {1}".format(name_field, the_file))
+            arcpy.AddError("Field {0} not found in {1}".format(name_field, the_file))
+            raise Exception('Invalid field')
 
     args.append(the_file)
 

@@ -1,13 +1,16 @@
 import arcpy
+from uuid import uuid4
 
 arcpy.env.overwriteOutput = True
 
 
 input_fc = arcpy.GetParameterAsText(0)
-catalog_path = arcpy.Describe(input_fc).catalogPath
+output_fc = arcpy.GetParameterAsText(1)
+catalog_path = arcpy.Describe(output_fc).catalogPath
 
-arcpy.CopyFeatures_management(input_fc, r'in_memory/temp_copy')
-arcpy.CopyFeatures_management(r'in_memory/temp_copy', catalog_path)
+# tmp_copy = r'in_memory/a{0}'.format(str(uuid4()).replace('-', ''))
 
-
-arcpy.SetParameterAsText(1, catalog_path)
+arcpy.CopyFeatures_management(input_fc, catalog_path)
+# arcpy.CopyFeatures_management(tmp_copy, input_fc)
+#
+# arcpy.SetParameterAsText(1, input_fc)
