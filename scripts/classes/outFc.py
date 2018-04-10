@@ -90,7 +90,7 @@ def create_feature_class(sr, is_dissolved=True):
     fc_name = 'a' + str(uuid4()).replace('-', '')
     out_path = os.path.join(out_dir, fc_name)
 
-    arcpy.CreateFeatureclass_management(out_dir, fc_name, 'POLYLINE', spatial_reference=sr)
+    arcpy.CreateFeatureclass_management(out_dir, fc_name, 'POLYLINE', spatial_reference=sr, has_m='ENABLED')
 
     for f in field_list:
         arcpy.AddField_management(out_path, **f)

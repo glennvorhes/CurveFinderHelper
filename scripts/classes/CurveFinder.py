@@ -139,13 +139,16 @@ class CurveFinder:
 
 
 if __name__ == "__main__":
+    s = datetime.now()
     # tst_path = r'C:\tmp2\original_curves.gdb\primary_rsub_83_0p9'
     # tst_path2 = r'T:\Projects\CurveFinder\Iowa\IowaCurve\LRS_Linework\NonPrimary.shp'
     # tst_path3 = r'C:\tmp\tmp.gdb\primary_rd1'
-    tst_path3 = r'C:\tmp\tmp.gdb\iowa_dis_13_sub_1'
+    tst_path3 = r'C:\Users\glenn\Desktop\curves\iowa.gdb\primary_dissolve_dis_sub5'
 
     # r'C:\tmp\tmp.gdb\iowa_dis_13_gt'
 
     finder = CurveFinder(tst_path3, road_name_field='OFF_NAME')
-    finder.run(angle=0.05, iterate=True)
+    finder.run(angle=1)
     finder.output_curves(os.path.join(r'C:\tmp\tmp.gdb', datetime.now().strftime('p%Y_%m_%d_%H_%M_%S')))
+
+    print(datetime.now() - s)
