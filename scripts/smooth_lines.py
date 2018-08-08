@@ -1,6 +1,7 @@
 import os
 import shutil
 import sys
+import re
 
 import arcpy
 
@@ -63,6 +64,10 @@ for i in range(10):
 
     paek_tolerance = (i + 1) * 2
     out_name_paek = helpers.make_output_name(input_name, 'paek', paek_tolerance)
+
+    if output_workspace.strip().lower().endswith('.gdb'):
+        out_name_bezier = re.sub(r'\.(s|S)(h|H)(p|P)$', '', out_name_bezier)
+        out_name_paek = re.sub(r'\.(s|S)(h|H)(p|P)$', '', out_name_paek)
 
     bezier_deviation_str = "{0} Meters".format(bezier_deviation)
     paek_tolerance_str = "{0} Meters".format(paek_tolerance)

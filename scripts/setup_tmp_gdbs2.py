@@ -1,5 +1,6 @@
 import arcpy
 import os
+from uuid import uuid4
 
 arcpy.env.overwriteOutput = True
 
@@ -10,20 +11,11 @@ if not os.path.isdir(tmp_dir):
     raise IOError('{0} does not exist'.format(tmp_dir))
 
 
-smoothed_lines = os.path.join(tmp_dir, 'smoothed_lines.gdb')
-tmp_curves = os.path.join(tmp_dir, 'temp_curves.gdb')
-
-# original_curves = os.path.join(tmp_dir, 'original_curves.gdb')
-# smoothed_curves = os.path.join(tmp_dir, 'smoothed_curves.gdb')
+smoothed_lines = os.path.join(tmp_dir, '{0}.gdb'.format('a' + str(uuid4()).replace('-', '')))
+tmp_curves = os.path.join(tmp_dir, '{0}.gdb'.format('a' + str(uuid4()).replace('-', '')))
 
 for g in [smoothed_lines, tmp_curves]:
-    if arcpy.Exists(g):
-        arcpy.env.workspace = g
-        fcs = arcpy.ListFeatureClasses()
-        for fc in fcs:
-            arcpy.Delete_management(os.path.join(g, fc))
-    else:
-        arcpy.CreateFileGDB_management(os.path.dirname(g), os.path.basename(g))
+    arcpy.CreateFileGDB_management(os.path.dirname(g), os.path.basename(g))
 
 arcpy.SetParameterAsText(1, smoothed_lines)
 arcpy.SetParameterAsText(2, tmp_curves)

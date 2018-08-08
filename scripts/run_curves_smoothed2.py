@@ -39,11 +39,6 @@ for f in fcs:
     else:
         finder.run(iterate=True)
     finder.output_curves(out_curve)
-    arcpy.AddMessage(the_file)
     arcpy.AddMessage("Created: " + out_curve)
-
-    # counter += 1
-    # if counter > 3 and debug:
-    #     break
 
 arcpy.SetParameterAsText(4, curve_workspace)

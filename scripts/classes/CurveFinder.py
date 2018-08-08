@@ -134,6 +134,12 @@ class CurveFinder:
 
         del ins, insert
 
+        # arcpy.AddField_management(self._tmp_out_features, 'lat', 'DOUBLE')
+        # arcpy.AddField_management(self._tmp_out_features, 'lon', 'DOUBLE')
+        #
+        # arcpy.Calculate
+
+
         arcpy.CopyFeatures_management(self._tmp_out_features, output_fc)
 
 
