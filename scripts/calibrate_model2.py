@@ -6,12 +6,10 @@ import re
 from collections import defaultdict
 
 try:
-    from classes.Calibrate import Calibrate
     from classes.CalibScore import CalibScore
     from classes import outFc
 except ImportError:
     sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
-    from classes.Calibrate import Calibrate
     from classes.CalibScore import CalibScore
     from classes import outFc
 
@@ -89,15 +87,8 @@ def make_result(meth_, ang_, dev_, tol_, pth_, calib_, match_weight, miss_weight
     _res.score = calib_.score(match_weight, miss_weight, over_weight)
     _res.path = pth_
 
-    # arcpy.AddMessage(_res)
-
     return _res
 
-
-#
-# ground_truth = r'C:\Users\glenn\Desktop\curves\iowa.gdb\primary_dissolve_gt_prep17'
-# curves_workspace = r'C:\tmp\temp_curves.gdb'
-# debug = True
 
 out_table = r'in_memory\a' + str(uuid4()).replace('-', '')
 parts = out_table.split('\\')
@@ -118,8 +109,6 @@ arcpy.AddField_management(out_table, 'over_pcnt', 'FLOAT')
 
 arcpy.AddField_management(out_table, 'score', 'FLOAT')
 arcpy.AddField_management(out_table, 'path', 'TEXT', field_length=200)
-
-# calib = Calibrate(ground_truth, curves_workspace, debug)
 
 calib = CalibScore()
 

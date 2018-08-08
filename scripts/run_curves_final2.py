@@ -10,13 +10,11 @@ import arcpy
 #     import helpers
 
 try:
-    from classes.Calibrate import Calibrate
     from classes.CurveFinder import CurveFinder
     from arcpy_geom.arcpy_descibe import ArcpyDescribeFeatureClass
 except ImportError:
     sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
     from classes.CurveFinder import CurveFinder
-    from classes.Calibrate import Calibrate
     from arcpy_geom.arcpy_descibe import ArcpyDescribeFeatureClass
 
 
