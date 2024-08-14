@@ -4,6 +4,10 @@ from ..arcpy_geom.features import LineString
 class Curve(LineString):
 
     def __init__(self, angle_threshold):
+        # super().__init__([], {})
+        LineString.__init__(self, [], {})
+
+
         self.Type = None
         self._Length = None
         self._Dir = None
@@ -23,7 +27,9 @@ class Curve(LineString):
         self.RTESys = None
         self.Vers_date = None
 
-        LineString.__init__(self, [])
+
+
+        # LineString.__init__(self, [], {})
 
     @property
     def start_m(self):

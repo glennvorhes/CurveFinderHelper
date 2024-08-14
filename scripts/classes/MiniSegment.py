@@ -161,7 +161,7 @@ class MiniSegment:
 
     @property
     def curve_type(self):
-        return self.curve_type
+        return self._curve_type
 
     @curve_type.setter
     def curve_type(self, curve_type):

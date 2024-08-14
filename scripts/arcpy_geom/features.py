@@ -36,6 +36,9 @@ class Feature:
             return None
 
     def set_property(self, prop, val):
+        if not isinstance(self.properties, dict):
+            self.properties = dict()
+
         self.properties[prop] = val
 
     # @property
@@ -89,6 +92,8 @@ class MultiPoint(Feature):
 class LineString(Feature):
     def __init__(self, vertices, props=None):
 
+
+
         multi = False
 
         if len(vertices) == 0:
@@ -101,6 +106,13 @@ class LineString(Feature):
             multi = True
 
         Feature.__init__(self, vertices, props, multipart=multi)
+
+
+        # super().__init__(vertices, props, multipart=multi)
+
+
+
+        # Feature.__init__(self, vertices, props, multipart=multi)
 
     def add_m(self):
         if self.multipart:
